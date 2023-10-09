@@ -102,6 +102,7 @@ def insert_or_update_row(first_blank_row: int, new_data: list) -> bool:
         app.quit()  # Close the hidden Excel application
 
 
+
 def save_to_csv():
     # for HT 0-0
     try:
@@ -168,6 +169,28 @@ def insert_to_csv(new_data):
     df.to_csv(csv_file_path, header=False, index=False, mode='a')
 
 
+
+def insert_to_csv2(new_data):
+    # Read the existing CSV file into a DataFrame
+    try:
+        df_existing = pd.read_csv(csv_file_path)
+    except FileNotFoundError:
+        df_existing = pd.DataFrame()  # If the file doesn't exist, create an empty DataFrame
+
+    # Create a DataFrame from the new data
+    df_new = pd.DataFrame(new_data)
+
+    similar_mask = df_existing.apply(lambda row: (row[0] == df_new[0]) & (row[1] == df_new[1]), axis=1)
+
+    # If any row has similar 1st and 2nd column values, skip insertion
+    if similar_mask.any().tolist():
+        print("Data with similar 1st and 2nd column values already exists. Skipping insertion.")
+        return
+
+    # Insert the new data into the CSV file
+    df_new.to_csv(csv_file_path, header=False, index=False, mode='a')
+
+
 def scanner():
     # define 'driver' variable
     if check_excel_file() is False:
@@ -212,7 +235,7 @@ def scanner():
 
             # wait till 60s if no live games are available
             if len(table_elements) == 0:
-                logging.info('--> No match found. Waiting for next try..')
+                logging.info('--> Trying..')
                 time.sleep(10)
                 continue
 
@@ -365,14 +388,14 @@ def scanner():
 
                     if check_for_duplicate(data_row) is False:
                         insert = insert_or_update_row(first_blank_row, data_row)
-                        # first_blank_row += 1
+                        first_blank_row += 1
                         # if insert is True:
                         #     logging.info(f'--> <{game}> data is fetched and stored to gamedb!')
                         #     time.sleep(5)
                         #     save_to_csv()
                         # else:
-                        #     logging.info(f'--> <{game}> data is already exist in gamedb!')
-                        #     save_to_csv()
+                        # logging.info(f'--> <{game}> data is already exist in gamedb!')
+                        # save_to_csv()
 
                     tr_ind += 2
 
