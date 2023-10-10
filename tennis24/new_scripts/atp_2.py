@@ -276,7 +276,7 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
 
         for index, match_link in enumerate(match_links):
 
-            if link[0].strip() == 'https://www.tennis24.com/atp-singles/french-open-2022/results/' and index < 207:
+            if link[0].strip() == 'https://www.tennis24.com/atp-singles/french-open-2018/results/' and index < 91:
                 print('Data exists')
                 continue
 
@@ -287,6 +287,9 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
 
             driver.get(match_link)
             time.sleep(3)
+
+            WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, '//span[@class="tournamentHeader__country"]')))
             header = driver.find_element(By.XPATH, '//span[@class="tournamentHeader__country"]').text
 
             if ',' in header:
@@ -1376,7 +1379,7 @@ def scrapper():
     print('Execution starts!')
 
     filename = 'atp_tournaments_2.csv'
-    excel = 'atp_2.xlsx'
+    excel = 'atp_2.2.xlsx'
     # create_csv(filename)
     driver = config_driver()
     # get_tournaments(driver, filename)

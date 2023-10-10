@@ -25,7 +25,7 @@ def config_driver() -> webdriver.Chrome:
 
 
 def check_data_exists(name: str) -> bool:
-    filename = 'atp_4.xlsx'
+    filename = 'wta_4.xlsx'
     workbook = openpyxl.load_workbook(filename)
     sheet = workbook.active
     for row in sheet.iter_rows(values_only=True):
@@ -1377,8 +1377,8 @@ def scrapper():
     print('=============================================================')
     print('Execution starts!')
 
-    filename = 'atp_tournaments_1.csv'
-    excel = 'atp_1.xlsx'
+    filename = 'wta_tournaments_1.csv'
+    excel = 'wta_1.xlsx'
     # create_csv(filename)
     driver = config_driver()
     # get_tournaments(driver, filename)

@@ -239,8 +239,10 @@ def wait_for_internet():
 
     print("Internet connection is back!")
 
+
 def remove_spaces(input_string):
     return ''.join([char for char in input_string if char != ' '])
+
 
 def iterate_tournament(driver: webdriver.Chrome, filename, excel):
     links = get_tournament_list(filename)
@@ -288,6 +290,9 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
 
             driver.get(match_link)
             time.sleep(3)
+            WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, '//span[@class="tournamentHeader__country"]')))
+
             header = driver.find_element(By.XPATH, '//span[@class="tournamentHeader__country"]').text
 
             if ',' in header:
@@ -543,9 +548,11 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
                     elif temp_data[1].strip() == '1st Serve Percentage':
                         match_player1_1st_serve_per, match_player2_1st_serve_per = temp_data[0], temp_data[2]
                     elif temp_data[1].strip() == '1st Serve Points Won':
-                        match_player1_1st_serve_points_won, match_player2_1st_serve_points_won = temp_data[0], temp_data[2]
+                        match_player1_1st_serve_points_won, match_player2_1st_serve_points_won = temp_data[0], \
+                        temp_data[2]
                     elif temp_data[1].strip() == '2nd Serve Points Won':
-                        match_player1_2nd_serve_points_won, match_player2_2nd_serve_points_won = temp_data[0], temp_data[2]
+                        match_player1_2nd_serve_points_won, match_player2_2nd_serve_points_won = temp_data[0], \
+                        temp_data[2]
                     elif temp_data[1].strip() == 'Break Points Saved':
                         match_player1_break_point_saved, match_player2_break_point_saved = temp_data[0], temp_data[2]
                     elif temp_data[1].strip() == '1st Return Points Won':
@@ -594,9 +601,11 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
                         elif temp_data[1].strip() == '1st Serve Percentage':
                             set1_player1_1st_serve_per, set1_player2_1st_serve_per = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Serve Points Won':
-                            set1_player1_1st_serve_points_won, set1_player2_1st_serve_points_won = temp_data[0], temp_data[2]
+                            set1_player1_1st_serve_points_won, set1_player2_1st_serve_points_won = temp_data[0], \
+                            temp_data[2]
                         elif temp_data[1].strip() == '2nd Serve Points Won':
-                            set1_player1_2nd_serve_points_won, set1_player2_2nd_serve_points_won = temp_data[0], temp_data[2]
+                            set1_player1_2nd_serve_points_won, set1_player2_2nd_serve_points_won = temp_data[0], \
+                            temp_data[2]
                         elif temp_data[1].strip() == 'Break Points Saved':
                             set1_player1_break_point_saved, set1_player2_break_point_saved = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Return Points Won':
@@ -647,10 +656,10 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
                             set2_player1_1st_serve_per, set2_player2_1st_serve_per = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Serve Points Won':
                             set2_player1_1st_serve_points_won, set2_player2_1st_serve_points_won = temp_data[0], \
-                            temp_data[2]
+                                temp_data[2]
                         elif temp_data[1].strip() == '2nd Serve Points Won':
                             set2_player1_2nd_serve_points_won, set2_player2_2nd_serve_points_won = temp_data[0], \
-                            temp_data[2]
+                                temp_data[2]
                         elif temp_data[1].strip() == 'Break Points Saved':
                             set2_player1_break_point_saved, set2_player2_break_point_saved = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Return Points Won':
@@ -701,10 +710,10 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
                             set3_player1_1st_serve_per, set3_player2_1st_serve_per = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Serve Points Won':
                             set3_player1_1st_serve_points_won, set3_player2_1st_serve_points_won = temp_data[0], \
-                            temp_data[2]
+                                temp_data[2]
                         elif temp_data[1].strip() == '2nd Serve Points Won':
                             set3_player1_2nd_serve_points_won, set3_player2_2nd_serve_points_won = temp_data[0], \
-                            temp_data[2]
+                                temp_data[2]
                         elif temp_data[1].strip() == 'Break Points Saved':
                             set3_player1_break_point_saved, set3_player2_break_point_saved = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Return Points Won':
@@ -755,10 +764,10 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
                             set4_player1_1st_serve_per, set4_player2_1st_serve_per = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Serve Points Won':
                             set4_player1_1st_serve_points_won, set4_player2_1st_serve_points_won = temp_data[0], \
-                            temp_data[2]
+                                temp_data[2]
                         elif temp_data[1].strip() == '2nd Serve Points Won':
                             set4_player1_2nd_serve_points_won, set4_player2_2nd_serve_points_won = temp_data[0], \
-                            temp_data[2]
+                                temp_data[2]
                         elif temp_data[1].strip() == 'Break Points Saved':
                             set4_player1_break_point_saved, set4_player2_break_point_saved = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Return Points Won':
@@ -809,10 +818,10 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
                             set5_player1_1st_serve_per, set5_player2_1st_serve_per = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Serve Points Won':
                             set5_player1_1st_serve_points_won, set5_player2_1st_serve_points_won = temp_data[0], \
-                            temp_data[2]
+                                temp_data[2]
                         elif temp_data[1].strip() == '2nd Serve Points Won':
                             set5_player1_2nd_serve_points_won, set5_player2_2nd_serve_points_won = temp_data[0], \
-                            temp_data[2]
+                                temp_data[2]
                         elif temp_data[1].strip() == 'Break Points Saved':
                             set5_player1_break_point_saved, set5_player2_break_point_saved = temp_data[0], temp_data[2]
                         elif temp_data[1].strip() == '1st Return Points Won':
@@ -1298,24 +1307,37 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
                  set5_player2_service_games_won,
                  set5_player1_return_games_won, set5_player2_return_games_won, set5_player1_total_games_won,
                  set5_player2_total_games_won,
-                 remove_spaces(pbp_set_1_game_1), remove_spaces(pbp_set_1_game_2), remove_spaces(pbp_set_1_game_3), remove_spaces(pbp_set_1_game_4),
+                 remove_spaces(pbp_set_1_game_1), remove_spaces(pbp_set_1_game_2), remove_spaces(pbp_set_1_game_3),
+                 remove_spaces(pbp_set_1_game_4),
                  remove_spaces(pbp_set_1_game_5), remove_spaces(pbp_set_1_game_6),
-                 remove_spaces(pbp_set_1_game_7), remove_spaces(pbp_set_1_game_8), remove_spaces(pbp_set_1_game_9), remove_spaces(pbp_set_1_game_10), remove_spaces(pbp_set_1_game_11),
-                 remove_spaces(pbp_set_1_game_12), remove_spaces(pbp_set_1_game_13),remove_spaces( pbp_set_1_game_14),remove_spaces( pbp_set_1_game_15),remove_spaces( pbp_set_2_game_1),remove_spaces( pbp_set_2_game_2),remove_spaces( pbp_set_2_game_3),
-                 remove_spaces(pbp_set_2_game_4),remove_spaces( pbp_set_2_game_5), remove_spaces(pbp_set_2_game_6),
-                 remove_spaces(pbp_set_2_game_7), remove_spaces(pbp_set_2_game_8),remove_spaces( pbp_set_2_game_9),remove_spaces( pbp_set_2_game_10),remove_spaces( pbp_set_2_game_11),
-                 remove_spaces(pbp_set_2_game_12), remove_spaces(pbp_set_2_game_13),remove_spaces( pbp_set_2_game_14),remove_spaces( pbp_set_2_game_15),remove_spaces( pbp_set_3_game_1),remove_spaces( pbp_set_3_game_2),remove_spaces( pbp_set_3_game_3),
+                 remove_spaces(pbp_set_1_game_7), remove_spaces(pbp_set_1_game_8), remove_spaces(pbp_set_1_game_9),
+                 remove_spaces(pbp_set_1_game_10), remove_spaces(pbp_set_1_game_11),
+                 remove_spaces(pbp_set_1_game_12), remove_spaces(pbp_set_1_game_13), remove_spaces(pbp_set_1_game_14),
+                 remove_spaces(pbp_set_1_game_15), remove_spaces(pbp_set_2_game_1), remove_spaces(pbp_set_2_game_2),
+                 remove_spaces(pbp_set_2_game_3),
+                 remove_spaces(pbp_set_2_game_4), remove_spaces(pbp_set_2_game_5), remove_spaces(pbp_set_2_game_6),
+                 remove_spaces(pbp_set_2_game_7), remove_spaces(pbp_set_2_game_8), remove_spaces(pbp_set_2_game_9),
+                 remove_spaces(pbp_set_2_game_10), remove_spaces(pbp_set_2_game_11),
+                 remove_spaces(pbp_set_2_game_12), remove_spaces(pbp_set_2_game_13), remove_spaces(pbp_set_2_game_14),
+                 remove_spaces(pbp_set_2_game_15), remove_spaces(pbp_set_3_game_1), remove_spaces(pbp_set_3_game_2),
+                 remove_spaces(pbp_set_3_game_3),
                  remove_spaces(pbp_set_3_game_4), remove_spaces(pbp_set_3_game_5), remove_spaces(pbp_set_3_game_6),
-                 remove_spaces(pbp_set_3_game_7), remove_spaces(pbp_set_3_game_8),remove_spaces( pbp_set_3_game_9),remove_spaces( pbp_set_3_game_10),remove_spaces( pbp_set_3_game_11),
-                 remove_spaces(pbp_set_3_game_12),remove_spaces( pbp_set_3_game_13),remove_spaces( pbp_set_3_game_14),remove_spaces( pbp_set_3_game_15),
-                 remove_spaces(pbp_set_4_game_1),remove_spaces( pbp_set_4_game_2),remove_spaces( pbp_set_4_game_3),
-                 remove_spaces(pbp_set_4_game_4),remove_spaces( pbp_set_4_game_5),remove_spaces( pbp_set_4_game_6),
-                 remove_spaces(pbp_set_4_game_7),remove_spaces( pbp_set_4_game_8),remove_spaces( pbp_set_4_game_9),remove_spaces( pbp_set_4_game_10),remove_spaces( pbp_set_4_game_11),
-                 remove_spaces(pbp_set_4_game_12), remove_spaces(pbp_set_4_game_13),remove_spaces( pbp_set_4_game_14),remove_spaces( pbp_set_4_game_15),remove_spaces(pbp_set_5_game_1),
+                 remove_spaces(pbp_set_3_game_7), remove_spaces(pbp_set_3_game_8), remove_spaces(pbp_set_3_game_9),
+                 remove_spaces(pbp_set_3_game_10), remove_spaces(pbp_set_3_game_11),
+                 remove_spaces(pbp_set_3_game_12), remove_spaces(pbp_set_3_game_13), remove_spaces(pbp_set_3_game_14),
+                 remove_spaces(pbp_set_3_game_15),
+                 remove_spaces(pbp_set_4_game_1), remove_spaces(pbp_set_4_game_2), remove_spaces(pbp_set_4_game_3),
+                 remove_spaces(pbp_set_4_game_4), remove_spaces(pbp_set_4_game_5), remove_spaces(pbp_set_4_game_6),
+                 remove_spaces(pbp_set_4_game_7), remove_spaces(pbp_set_4_game_8), remove_spaces(pbp_set_4_game_9),
+                 remove_spaces(pbp_set_4_game_10), remove_spaces(pbp_set_4_game_11),
+                 remove_spaces(pbp_set_4_game_12), remove_spaces(pbp_set_4_game_13), remove_spaces(pbp_set_4_game_14),
+                 remove_spaces(pbp_set_4_game_15), remove_spaces(pbp_set_5_game_1),
                  remove_spaces(pbp_set_5_game_2), remove_spaces(pbp_set_5_game_3),
-                 remove_spaces(pbp_set_5_game_4), remove_spaces(pbp_set_5_game_5),remove_spaces( pbp_set_5_game_6),
-                 remove_spaces(pbp_set_5_game_7),remove_spaces( pbp_set_5_game_8),remove_spaces( pbp_set_5_game_9),remove_spaces( pbp_set_5_game_10),remove_spaces( pbp_set_5_game_11),
-                 remove_spaces(pbp_set_5_game_12),remove_spaces( pbp_set_5_game_13),remove_spaces( pbp_set_5_game_14),remove_spaces( pbp_set_5_game_15)]], excel)
+                 remove_spaces(pbp_set_5_game_4), remove_spaces(pbp_set_5_game_5), remove_spaces(pbp_set_5_game_6),
+                 remove_spaces(pbp_set_5_game_7), remove_spaces(pbp_set_5_game_8), remove_spaces(pbp_set_5_game_9),
+                 remove_spaces(pbp_set_5_game_10), remove_spaces(pbp_set_5_game_11),
+                 remove_spaces(pbp_set_5_game_12), remove_spaces(pbp_set_5_game_13), remove_spaces(pbp_set_5_game_14),
+                 remove_spaces(pbp_set_5_game_15)]], excel)
 
             required_time = "{:.2f} seconds".format(time.time() - start_time)
             print(f'{counter}. Match link = {match_link} -> Time required {required_time}')
@@ -1360,7 +1382,7 @@ def scrapper():
     print('Execution starts!')
 
     filename = 'atp_tournaments_3.csv'
-    excel = 'atp_3.xlsx'
+    excel = 'local/atp_3.2.xlsx'
     # create_csv(filename)
     driver = config_driver()
     # get_tournaments(driver, filename)
