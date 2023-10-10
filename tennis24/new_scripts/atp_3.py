@@ -19,7 +19,6 @@ def config_driver() -> webdriver.Chrome:
     chrome_options.add_argument("--disable-infobars")
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--window-size=1920,1080")
-    # chrome_options.add_argument(f'user-agent={UserAgent().random}')
     chrome_options.add_argument('--headless')
     driver = webdriver.Chrome(options=chrome_options)
     return driver
@@ -1360,8 +1359,8 @@ def scrapper():
     print('=============================================================')
     print('Execution starts!')
 
-    filename = 'atp_tournaments.csv'
-    excel = 'atp_1.xlsx'
+    filename = 'atp_tournaments_3.csv'
+    excel = 'atp_3.xlsx'
     # create_csv(filename)
     driver = config_driver()
     # get_tournaments(driver, filename)
