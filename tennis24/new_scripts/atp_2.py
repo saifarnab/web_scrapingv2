@@ -274,6 +274,9 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
 
         print(f'Total matches = {len(match_links)}')
 
+        if len(match_links) < 1:
+            raise Exception('0 match found')
+
         for index, match_link in enumerate(match_links):
 
             if link[0].strip() == 'https://www.tennis24.com/atp-singles/houston-2014/results/' and index < 40:
