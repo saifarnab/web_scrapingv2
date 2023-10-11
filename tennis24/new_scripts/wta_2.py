@@ -25,7 +25,7 @@ def config_driver() -> webdriver.Chrome:
 
 
 def check_data_exists(name: str) -> bool:
-    filename = 'atp_4.xlsx'
+    filename = 'wta_4.xlsx'
     workbook = openpyxl.load_workbook(filename)
     sheet = workbook.active
     for row in sheet.iter_rows(values_only=True):
@@ -276,9 +276,9 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
 
         for index, match_link in enumerate(match_links):
 
-            if link[0].strip() == 'https://www.tennis24.com/atp-singles/houston-2014/results/' and index < 40:
-                print('Data exists')
-                continue
+            # if link[0].strip() == 'https://www.tennis24.com/match/WjHz5O01/#/match-summary/match-summary' and index < 5:
+            #     print('Data exists')
+            #     continue
 
             start_time = time.time()
 
@@ -287,7 +287,6 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
 
             driver.get(match_link)
             time.sleep(3)
-
             WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located((By.XPATH, '//span[@class="tournamentHeader__country"]')))
             header = driver.find_element(By.XPATH, '//span[@class="tournamentHeader__country"]').text
@@ -531,13 +530,13 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
             starts = driver.find_elements(By.XPATH, "//a[@href='#/match-summary/match-statistics']")
             if len(starts) != 0:
                 driver.execute_script("arguments[0].click();", starts[0])
-
                 try:
                     WebDriverWait(driver, 3).until(
                         EC.visibility_of_element_located(
                             (By.XPATH, '//div[@class="subFilter detail__subFilter detail__subFilter--stats"]')))
                 except Exception as e:
                     pass
+
                 match_elements = driver.find_elements(By.XPATH, '//div[@data-testid="wcl-statistics"]')
                 for match_element in match_elements:
                     temp_data = match_element.text.replace('\n', '#').split('#')
@@ -1381,8 +1380,8 @@ def scrapper():
     print('=============================================================')
     print('Execution starts!')
 
-    filename = 'atp_tournaments_2.csv'
-    excel = 'atp_2.4.xlsx'
+    filename = 'wta_tournaments_2.csv'
+    excel = 'local/wta_2.xlsx'
     # create_csv(filename)
     driver = config_driver()
     # get_tournaments(driver, filename)

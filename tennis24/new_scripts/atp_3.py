@@ -276,7 +276,7 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
 
         for index, match_link in enumerate(match_links):
 
-            if link.strip() == 'https://www.tennis24.com/atp-singles/rome-2015/results/' and index < 53:
+            if link[0].strip() == 'https://www.tennis24.com/atp-singles/st-petersburg-2018/results/' and index < 21:
                 print('Data exists')
                 continue
 
@@ -534,9 +534,12 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
             starts = driver.find_elements(By.XPATH, "//a[@href='#/match-summary/match-statistics']")
             if len(starts) != 0:
                 driver.execute_script("arguments[0].click();", starts[0])
-                WebDriverWait(driver, 3).until(
-                    EC.visibility_of_element_located(
-                        (By.XPATH, '//div[@class="subFilter detail__subFilter detail__subFilter--stats"]')))
+                try:
+                    WebDriverWait(driver, 3).until(
+                        EC.visibility_of_element_located(
+                            (By.XPATH, '//div[@class="subFilter detail__subFilter detail__subFilter--stats"]')))
+                except Exception as e:
+                    pass
 
                 match_elements = driver.find_elements(By.XPATH, '//div[@data-testid="wcl-statistics"]')
                 for match_element in match_elements:
@@ -1382,7 +1385,7 @@ def scrapper():
     print('Execution starts!')
 
     filename = 'atp_tournaments_3.csv'
-    excel = 'local/atp_3.3.xlsx'
+    excel = 'local/atp_3.5.xlsx'
     # create_csv(filename)
     driver = config_driver()
     # get_tournaments(driver, filename)
