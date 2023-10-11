@@ -1378,7 +1378,7 @@ def scrapper():
     print('Execution starts!')
 
     filename = 'wta_tournaments_1.csv'
-    excel = 'wta_1.xlsx'
+    excel = 'local/wta_1.xlsx'
     # create_csv(filename)
     driver = config_driver()
     # get_tournaments(driver, filename)
