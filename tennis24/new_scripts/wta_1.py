@@ -530,9 +530,12 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
             starts = driver.find_elements(By.XPATH, "//a[@href='#/match-summary/match-statistics']")
             if len(starts) != 0:
                 driver.execute_script("arguments[0].click();", starts[0])
-                WebDriverWait(driver, 3).until(
-                    EC.visibility_of_element_located(
-                        (By.XPATH, '//div[@class="subFilter detail__subFilter detail__subFilter--stats"]')))
+                try:
+                    WebDriverWait(driver, 3).until(
+                        EC.visibility_of_element_located(
+                            (By.XPATH, '//div[@class="subFilter detail__subFilter detail__subFilter--stats"]')))
+                except Exception as e:
+                    pass
 
                 match_elements = driver.find_elements(By.XPATH, '//div[@data-testid="wcl-statistics"]')
                 for match_element in match_elements:
