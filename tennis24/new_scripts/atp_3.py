@@ -1387,7 +1387,7 @@ def scrapper():
     print('Execution starts!')
 
     filename = 'atp_tournaments_3.csv'
-    excel = 'local/atp_3.5.xlsx'
+    excel = 'local/atp_3.6.xlsx'
     # create_csv(filename)
     driver = config_driver()
     # get_tournaments(driver, filename)
