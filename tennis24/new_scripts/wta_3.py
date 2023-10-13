@@ -278,7 +278,7 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
 
         for index, match_link in enumerate(match_links):
 
-            if link[0].strip() == 'https://www.tennis24.com/wta-singles/nurnberg-2019/results/' and index < 23:
+            if link[0].strip() == 'https://www.tennis24.com/wta-singles/palermo-2020/results/' and index < 53:
                 print('Data exists')
                 continue
 
