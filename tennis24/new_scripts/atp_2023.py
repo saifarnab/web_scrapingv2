@@ -25,7 +25,7 @@ def config_driver() -> webdriver.Chrome:
 
 
 def check_data_exists(name: str) -> bool:
-    filename = 'wta_4.xlsx'
+    filename = 'atp_4.xlsx'
     workbook = openpyxl.load_workbook(filename)
     sheet = workbook.active
     for row in sheet.iter_rows(values_only=True):
@@ -273,10 +273,13 @@ def iterate_tournament(driver: webdriver.Chrome, filename, excel):
             match_links.append(f'https://www.tennis24.com/match/{match_id}/#/match-summary/match-summary')
 
         print(f'Total matches = {len(match_links)}')
+        if len(match_links) < 1:
+            raise Exception('0 match found')
 
         for index, match_link in enumerate(match_links):
 
-            if link[0].strip() == 'https://www.tennis24.com/wta-singles/chicago-2-2021/results/' and index < 2:
+            if link[
+                0].strip() == 'https://www.tennis24.com/atp-singles/davis-cup-world-group-i-2022/results/' and index < 34:
                 print('Data exists')
                 continue
 
@@ -1357,7 +1360,7 @@ def insert_to_csv(new_data, filename: str):
 
 def get_tournaments(driver: webdriver.Chrome, filename: str):
     driver.get('https://www.tennis24.com/')
-    elm = driver.find_element(By.ID, "lmenu_5725")
+    elm = driver.find_element(By.ID, "lmenu_5724")
     driver.execute_script("arguments[0].click();", elm)
     time.sleep(1)
     te = []
@@ -1371,7 +1374,7 @@ def get_tournaments(driver: webdriver.Chrome, filename: str):
         seasons = driver.find_elements(By.XPATH, '//div[@class="archive__season"]/a')
         for season in seasons:
             year = int(season.text.split(' ')[-1])
-            if 2023 > year > 2013:
+            if year == 2023:
                 temp = item[:-1] + f'-{year}/results/'
                 insert_to_csv(temp, filename)
 
@@ -1380,13 +1383,13 @@ def scrapper():
     print('=============================================================')
     print('Execution starts!')
 
-    filename = 'wta_tournaments_1.csv'
-    excel = 'local/wta_1.5.xlsx'
-    # create_csv(filename)
+    filename = 'atp_tournaments_2023.csv'
+    # excel = 'local/atp_1.4.xlsx'
+    create_csv(filename)
     driver = config_driver()
-    # get_tournaments(driver, filename)
-    create_excel_with_header(excel)
-    iterate_tournament(driver, filename, excel)
+    get_tournaments(driver, filename)
+    # create_excel_with_header(excel)
+    # iterate_tournament(driver, filename, excel)
 
     print('Execution done!')
 
