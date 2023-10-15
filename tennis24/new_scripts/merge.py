@@ -31,7 +31,7 @@ def merge_excel_files(input_folder, output_file):
 
 # Specify the input folder containing Excel files and the output file
 input_folder = '_applibs'
-output_file = 'local/atp_2023.xlsx'
+output_file = 'global/wta_2023.xlsx'
 
 # Merge Excel files
 merge_excel_files(input_folder, output_file)
