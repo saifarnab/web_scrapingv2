@@ -15,8 +15,9 @@ def merge_excel_files(input_folder, output_file):
 
     # Iterate through each file in the input folder
     for filename in os.listdir(input_folder):
-        if filename.endswith('.xlsx') or filename.endswith('.xls'):
+        if filename.endswith('.xlsx'):
             filepath = os.path.join(input_folder, filename)
+            print(f'working file {filepath}')
             # Read each Excel file into a DataFrame
             df = pd.read_excel(filepath)
             # Remove newlines from all cells
@@ -29,8 +30,8 @@ def merge_excel_files(input_folder, output_file):
 
 
 # Specify the input folder containing Excel files and the output file
-input_folder = 'global'
-output_file = 'local/merged_output.xlsx'
+input_folder = '_applibs'
+output_file = 'local/atp_2023.xlsx'
 
 # Merge Excel files
 merge_excel_files(input_folder, output_file)
