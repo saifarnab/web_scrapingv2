@@ -45,6 +45,7 @@ def login(driver: webdriver.Chrome):
     driver.find_element(By.XPATH, '//button[@type="submit"]').click()
     time.sleep(2)
 
+
 def booking(driver: webdriver.Chrome):
     driver.get('https://egate.nub.ly/appointments/book/')
     driver.find_element(By.CSS_SELECTOR, "img[alt='موني جرام']").click()
