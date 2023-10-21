@@ -25,7 +25,7 @@ def config_driver() -> webdriver.Chrome:
 
 
 def check_data_exists(name: str) -> bool:
-    filename = 'atp_4.xlsx'
+    filename = '_applibs/atp_4.xlsx'
     workbook = openpyxl.load_workbook(filename)
     sheet = workbook.active
     for row in sheet.iter_rows(values_only=True):
