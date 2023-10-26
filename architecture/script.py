@@ -112,7 +112,7 @@ def scanner2():
     create_excel_with_header(filename)
     df = pd.read_csv('urls.csv')
     for index, row in df.iterrows():
-        url = f'https://members.architecture.com.au{row['URL']}'
+        url = f"https://members.architecture.com.au{row['URL']}"
         driver.get(url)
         try:
             name = driver.find_element(By.ID, "CompanyName").text
@@ -141,6 +141,53 @@ def scanner2():
         print(f'{index}. inserted from {url}')
 
 
+def address_spliter():
+
+    # Load the original Excel file
+    file_path = 'data.xlsx'  # Replace with the path to your input file
+    df = pd.read_excel(file_path)
+
+    # Create empty columns for "CITY," "STATE," and "POSTCODE"
+    df['STREET'] = ''
+    df['CITY'] = ''
+    df['STATE'] = ''
+    df['POSTCODE'] = ''
+
+    # Loop through the DataFrame to split and modify the "ADDRESS" column
+    for index, row in df.iterrows():
+        # address_parts = row['ADDRESS'].replace('AUSTRALIA', '').replace('Address:', '').strip()
+        # temp = address_parts.split(',')[-1].strip()
+        # state = temp.split(' ')[0]
+        # postcode = temp.split(' ')[1]
+        # city = address_parts.split(',')[0].split(' ')[-1]
+        # street = address_parts.split(',')[0].strip().rsplit(' ', 1)[0]
+        print(row['LINK'])
+        print(row['ADDRESS'])
+        address_parts = str(row['ADDRESS']).replace('AUSTRALIA', '').replace('Address:', '').strip()
+        temp = address_parts.split('\n')
+        last = temp[-1].replace(',', '').split(' ')
+        city = last[0]
+        state = last[1]
+        postcode = last[2]
+        street = temp[0]
+        # print(temp[0], temp[1], row['LINK'])
+        # time.sleep(1000)
+
+        # Update the new columns
+        df.at[index, 'STREET'] = street
+        df.at[index, 'CITY'] = city
+        df.at[index, 'STATE'] = state
+        df.at[index, 'POSTCODE'] = postcode
+
+    # Create a new DataFrame with the desired columns
+    new_df = df[['LINK', 'NAME', 'STREET', 'CITY', 'STATE', 'POSTCODE', 'PHONE', 'EMAIL', 'WEBSITE', ]]
+
+    # Save the new DataFrame to a new Excel file
+    output_file = 'data_v2.xlsx'  # Replace with the desired output file path
+    new_df.to_excel(output_file, index=False)
+
+
 if __name__ == '__main__':
     logging.info('----------------- Script start running ... -----------------')
-    scanner2()
+    address_spliter()
+    # scanner2()
