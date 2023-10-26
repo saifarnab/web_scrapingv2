@@ -14,7 +14,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 def config_driver(maximize_window: bool) -> webdriver.Chrome:
     chrome_options = Options()
-    chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_argument("lang=en-GB")
@@ -112,8 +112,12 @@ def scanner2():
     create_excel_with_header(filename)
     df = pd.read_csv('urls.csv')
     for index, row in df.iterrows():
-        url = f'https://members.architecture.com.au{row['URL']}'
+        url = f"https://members.architecture.com.au{row['URL']}"
         driver.get(url)
+        try:
+            WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "CompanyName")))
+        except:
+            pass
         try:
             name = driver.find_element(By.ID, "CompanyName").text
         except:
@@ -138,9 +142,55 @@ def scanner2():
             website = ''
 
         append_to_excel([[url, name, address, phone, mail, website]], filename)
-        print(f'{index}. inserted from {url}')
+        print(f'{index} -> {url} - {name} - {phone} - {mail} - {website}')
+
+
+def address_spliter():
+
+    # Load the original Excel file
+    file_path = 'data.xlsx'  # Replace with the path to your input file
+    df = pd.read_excel(file_path)
+
+    # Create empty columns for "CITY," "STATE," and "POSTCODE"
+    df['STREET'] = ''
+    df['CITY'] = ''
+    df['STATE'] = ''
+    df['POSTCODE'] = ''
+
+    # Loop through the DataFrame to split and modify the "ADDRESS" column
+    for index, row in df.iterrows():
+        try:
+            address_parts = str(row['ADDRESS']).replace('AUSTRALIA', '').replace('Address:', '').strip()
+            temp = address_parts.split('\n')
+            last = temp[-1].replace(',', '').split(' ')
+            city = last[0]
+            state = last[1]
+            postcode = last[2]
+
+            lines = address_parts.split('\n')
+            lines.pop()
+            new_string = '\n'.join(lines)
+            street = new_string
+            # Update the new columns
+            df.at[index, 'STREET'] = street
+            df.at[index, 'CITY'] = city
+            df.at[index, 'STATE'] = state
+            df.at[index, 'POSTCODE'] = postcode
+        except:
+            df.at[index, 'STREET'] = row['ADDRESS']
+            df.at[index, 'CITY'] = ''
+            df.at[index, 'STATE'] = ''
+            df.at[index, 'POSTCODE'] = ''
+
+    # Create a new DataFrame with the desired columns
+    new_df = df[['LINK', 'NAME', 'STREET', 'CITY', 'STATE', 'POSTCODE', 'PHONE', 'EMAIL', 'WEBSITE', ]]
+
+    # Save the new DataFrame to a new Excel file
+    output_file = 'data_v2.xlsx'  # Replace with the desired output file path
+    new_df.to_excel(output_file, index=False)
 
 
 if __name__ == '__main__':
     logging.info('----------------- Script start running ... -----------------')
+    # address_spliter()
     scanner2()
