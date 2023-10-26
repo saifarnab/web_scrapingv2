@@ -155,29 +155,28 @@ def address_spliter():
 
     # Loop through the DataFrame to split and modify the "ADDRESS" column
     for index, row in df.iterrows():
-        # address_parts = row['ADDRESS'].replace('AUSTRALIA', '').replace('Address:', '').strip()
-        # temp = address_parts.split(',')[-1].strip()
-        # state = temp.split(' ')[0]
-        # postcode = temp.split(' ')[1]
-        # city = address_parts.split(',')[0].split(' ')[-1]
-        # street = address_parts.split(',')[0].strip().rsplit(' ', 1)[0]
-        print(row['LINK'])
-        print(row['ADDRESS'])
-        address_parts = str(row['ADDRESS']).replace('AUSTRALIA', '').replace('Address:', '').strip()
-        temp = address_parts.split('\n')
-        last = temp[-1].replace(',', '').split(' ')
-        city = last[0]
-        state = last[1]
-        postcode = last[2]
-        street = temp[0]
-        # print(temp[0], temp[1], row['LINK'])
-        # time.sleep(1000)
+        try:
+            address_parts = str(row['ADDRESS']).replace('AUSTRALIA', '').replace('Address:', '').strip()
+            temp = address_parts.split('\n')
+            last = temp[-1].replace(',', '').split(' ')
+            city = last[0]
+            state = last[1]
+            postcode = last[2]
 
-        # Update the new columns
-        df.at[index, 'STREET'] = street
-        df.at[index, 'CITY'] = city
-        df.at[index, 'STATE'] = state
-        df.at[index, 'POSTCODE'] = postcode
+            lines = address_parts.split('\n')
+            lines.pop()
+            new_string = '\n'.join(lines)
+            street = new_string
+            # Update the new columns
+            df.at[index, 'STREET'] = street
+            df.at[index, 'CITY'] = city
+            df.at[index, 'STATE'] = state
+            df.at[index, 'POSTCODE'] = postcode
+        except:
+            df.at[index, 'STREET'] = row['ADDRESS']
+            df.at[index, 'CITY'] = ''
+            df.at[index, 'STATE'] = ''
+            df.at[index, 'POSTCODE'] = ''
 
     # Create a new DataFrame with the desired columns
     new_df = df[['LINK', 'NAME', 'STREET', 'CITY', 'STATE', 'POSTCODE', 'PHONE', 'EMAIL', 'WEBSITE', ]]
