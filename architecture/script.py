@@ -113,6 +113,10 @@ def scanner2():
     df = pd.read_csv('urls.csv')
     for index, row in df.iterrows():
         url = f"https://members.architecture.com.au{row['URL']}"
+
+        if '110379' in url:
+            append_to_excel([[url, "", "", "", "", ""]], filename)
+            continue
         driver.get(url)
         try:
             WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "CompanyName")))
@@ -146,7 +150,6 @@ def scanner2():
 
 
 def address_spliter():
-
     # Load the original Excel file
     file_path = 'data.xlsx'  # Replace with the path to your input file
     df = pd.read_excel(file_path)
@@ -162,35 +165,109 @@ def address_spliter():
         try:
             address_parts = str(row['ADDRESS']).replace('AUSTRALIA', '').replace('Address:', '').strip()
             temp = address_parts.split('\n')
-            last = temp[-1].replace(',', '').split(' ')
-            city = last[0]
-            state = last[1]
-            postcode = last[2]
+            if len(temp) > 1:
+                last = temp[-1].replace(',', '').split(' ')
+                postcode = last[-1]
+                state = last[-2]
+                city = ' '.join(last[:-2])
+                address = ' '.join(temp[:-1])
 
-            lines = address_parts.split('\n')
-            lines.pop()
-            new_string = '\n'.join(lines)
-            street = new_string
-            # Update the new columns
-            df.at[index, 'STREET'] = street
-            df.at[index, 'CITY'] = city
-            df.at[index, 'STATE'] = state
-            df.at[index, 'POSTCODE'] = postcode
+                # Update the new columns
+                df.at[index, 'STREET'] = address
+                df.at[index, 'CITY'] = city
+                df.at[index, 'STATE'] = state
+                df.at[index, 'POSTCODE'] = postcode
+
         except:
-            df.at[index, 'STREET'] = row['ADDRESS']
-            df.at[index, 'CITY'] = ''
-            df.at[index, 'STATE'] = ''
-            df.at[index, 'POSTCODE'] = ''
-
+            pass
     # Create a new DataFrame with the desired columns
     new_df = df[['LINK', 'NAME', 'STREET', 'CITY', 'STATE', 'POSTCODE', 'PHONE', 'EMAIL', 'WEBSITE', ]]
 
     # Save the new DataFrame to a new Excel file
     output_file = 'data_v2.xlsx'  # Replace with the desired output file path
     new_df.to_excel(output_file, index=False)
+    #         last = temp[-1].replace(',', '').split(' ')
+    #         city = last[0]
+    #         state = last[1]
+    #         postcode = last[2]
+    #
+    #         lines = address_parts.split('\n')
+    #         lines.pop()
+    #         new_string = '\n'.join(lines)
+    #         street = new_string
+    #         # Update the new columns
+    #         df.at[index, 'STREET'] = street
+    #         df.at[index, 'CITY'] = city
+    #         df.at[index, 'STATE'] = state
+    #         df.at[index, 'POSTCODE'] = postcode
+    #     except:
+    #         df.at[index, 'STREET'] = row['ADDRESS']
+    #         df.at[index, 'CITY'] = ''
+    #         df.at[index, 'STATE'] = ''
+    #         df.at[index, 'POSTCODE'] = ''
+    #
+
+
+
+def address_spliter_2():
+    driver = config_driver(True)
+    filename = 'data_mod.xlsx'
+    create_excel_with_header(filename)
+
+    file_path = 'data.xlsx'
+    df = pd.read_excel(file_path)
+
+    # Iterate through each row
+    for index, row in df.iterrows():
+        if str(row['NAME']) == 'nan':
+            url = row['LINK']
+            if '110788' in url:
+                continue
+            driver.get(url)
+            try:
+                WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "CompanyName")))
+            except:
+                pass
+            try:
+                name = driver.find_element(By.ID, "CompanyName").text
+            except:
+                name = ''
+            try:
+                address = driver.find_element(By.ID, "CompanyAddress").text
+            except:
+                address = ''
+            try:
+                phone = driver.find_elements(By.XPATH, '//div[@id="ContactHeading"]//p')
+                phone = phone[0].text
+            except:
+                phone = ''
+            elms = driver.find_elements(By.XPATH, '//div[@id="ContactHeading"]//p//a')
+            try:
+                mail = elms[0].text
+            except:
+                mail = ''
+            try:
+                website = elms[1].text
+            except:
+                website = ''
+
+            append_to_excel([[url, name, address, phone, mail, website]], filename)
+            print(f'{index} -> {url} - {name} - {phone} - {mail} - {website}')
+        # df.at[index, 'Name'] = 'NewPrefix_' + row['Name']
+
+    # Save the modified DataFrame
+    # df.to_excel('modified_excel_file.xlsx', index=False)
+
+def duplicates():
+    file_path = 'data_v2.xlsx'
+    df = pd.read_excel(file_path)
+    all_duplicate_rows = df[df.duplicated(keep=False)]
+    print(all_duplicate_rows)
 
 
 if __name__ == '__main__':
     logging.info('----------------- Script start running ... -----------------')
     # address_spliter()
-    scanner2()
+    # scanner2()
+    # address_spliter_2()
+    duplicates()
