@@ -1,15 +1,16 @@
+import os
+from datetime import datetime, timedelta
+from fractions import Fraction
+from random import randint
+from time import sleep
+
+import requests
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import ElementClickInterceptedException
-from bs4 import BeautifulSoup
-from time import sleep
-from random import randint
-from datetime import datetime, timedelta
-import os
-import requests
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 def get_driver(headless: bool):
@@ -33,10 +34,10 @@ def get_driver(headless: bool):
     # self.options.add_argument("--log-level=OFF")
     options.add_argument("--log-level=3")
 
-    # path = os.path.join(os.getcwd(), 'chromedriver.exe')
-    # driver = webdriver.Chrome(path, options=options)
+    path = os.path.join(os.getcwd(), 'chromedriver.exe')
+    driver = webdriver.Chrome(path, options=options)
 
-    driver = webdriver.Chrome(options=options)
+    # driver = webdriver.Chrome(options=options)
     return driver
 
 
@@ -199,7 +200,6 @@ def get_match(driver: webdriver, url: str):
 
 
 def get_data_2_5_cards(driver, url):
-    print(url)
     wait = WebDriverWait(driver, 20)
     try:
         driver.get(url)
@@ -256,39 +256,28 @@ def get_data_2_5_cards(driver, url):
         time = ''
     # print('{}\n {}\n {}'.format(tournament,match,time))
     # elements = driver.find_elements(By.XPATH, ".//*[@class='outright-item-list__item']")
-    elements = soup.find_all(class_='market-row-list__items')
+    elements = soup.find_all(class_='market-row')
     # print('elements', elements)
 
     for element in elements:
         data = element.text.strip()
-        # print(data)
         if "Each team to have 2+ cards" in data:
-            data = ' '.join([line.strip() for line in data.strip().splitlines() if line.strip()])
-            data = data.split(' ')
             try:
-                temp = round(eval(data[-1]), 3) + 1
-                temp = round(temp, 2)
+                data = str(data).split(' ')[-1].replace('cards', '').strip()
+                temp = "%.2f" % float(Fraction(data) + 1)
+                data = f'Each team to have 2+ cards: ({temp})'
             except:
-                temp = data[-1]
-            if temp == 'EVS':
-                temp = 2.0
-
-            data.pop(-1)
-            # data = ' '.join(data)+" : "+temp
-            data = ' '.join(data) + " : ( {} )".format(temp)
-            # d = ' '.join(data) + " : ({})".format(temp)
-
-            # print('data', data)
-
+                data = f'Each team to have 2+ cards: (2.0)'
             message = formatting_for_tele(time, tournament, match, data)
-            print('message: ', message)
-            sleep(1000)
-
-            # sending_telegram(message)
+            # print(url)
+            # print(message)
+            if time != '' and tournament != '' and match != '':
+                # print(url)
+                # print(message)
+                sending_telegram(message)
 
 
 def get_data_over_under(driver, url):
-    # print(url)
     wait = WebDriverWait(driver, 20)
     try:
         driver.get(url)
@@ -423,7 +412,7 @@ def main():
     # print('done')
     unique_id = set()
     while True:
-        driver = get_driver(False)
+        driver = get_driver(True)
         open_page(driver)
         keywords = ['2+ cards']
         match_url = []
@@ -441,7 +430,6 @@ def main():
                         match_url.append(url)
                         if k == '2+ cards':
                             get_data_2_5_cards(driver, url)
-                            # sending_telegram(msg)
                         # elif k == 'Cards Over/Under 3.5':
                         #     url = url + '?tab=corners-cards'
                         #     get_data_over_under(driver, url)
