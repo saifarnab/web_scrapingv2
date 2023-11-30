@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 def config_driver() -> webdriver.Chrome:
     chrome_options = Options()
-    # chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_argument("lang=en-GB")
@@ -91,56 +91,69 @@ def my_wright_place_save_img(link: str, pro_id: str) -> str:
 
 
 def wright_dental(driver: webdriver.Chrome, key: str, p_id, row_index: int) -> bool:
-    driver.get(f'https://wrightdental.co.uk/en/search?q={key}')
-    time.sleep(2)
-    product_xpath = '//div[@class="PublicProductListItemstyles__PublicProductListItemContainer-sc-12kch60-0 gbbJes"]//a'
-    no_xpath = '//h1[@class="NoDataToDisplaystyles__Heading-sc-1tn253l-2 VVARl"]'
-    no_products = driver.find_elements(By.XPATH, no_xpath)
-    if len(no_products) > 0:
-        return False
     try:
-        WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, product_xpath)))
-    except:
+        driver.get(f'https://wrightdental.co.uk/en/search?q={key}')
+        time.sleep(2)
+        product_xpath = '//div[@class="PublicProductListItemstyles__PublicProductListItemContainer-sc-12kch60-0 gbbJes"]//a'
+        no_xpath = '//h1[@class="NoDataToDisplaystyles__Heading-sc-1tn253l-2 VVARl"]'
+        no_products = driver.find_elements(By.XPATH, no_xpath)
+        if len(no_products) > 0:
+            return False
+        try:
+            WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, product_xpath)))
+        except:
+            return False
+        products = driver.find_elements(By.XPATH, product_xpath)
+        for product in products:
+            p_link = product.get_attribute('href')
+            if p_link.split('=')[-1] == p_id:
+                driver.get(p_link)
+                img_xpath = '//div[@class="Gallerystyles__MainItemContainer-sc-cp026m-1 dHFiOX"]//img'
+                try:
+                    WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, img_xpath)))
+                    img_link = driver.find_element(By.XPATH, img_xpath).get_attribute('src')
+                    found = wright_dental_save_img(img_link, product_id)
+                except:
+                    found = 'Not Found'
+                try:
+                    p_overview_xpath = '//p[@class="AttributeContentBlockstyles__AttributeContentBlockSummary-sc-13hmukp-2 sDuEe"]'
+                    p_overview = driver.find_element(By.XPATH, p_overview_xpath).text
+                except:
+                    p_overview = ''
+                update_file(row_index, p_overview, found)
+                print(f'{row_index} Found')
+                return True
         return False
-    products = driver.find_elements(By.XPATH, product_xpath)
-    for product in products:
-        p_link = product.get_attribute('href')
-        if p_link.split('=')[-1] == p_id:
-            driver.get(p_link)
-            img_xpath = '//div[@class="Gallerystyles__MainItemContainer-sc-cp026m-1 dHFiOX"]//img'
-            try:
-                WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, img_xpath)))
-                img_link = driver.find_element(By.XPATH, img_xpath).get_attribute('src')
-                found = wright_dental_save_img(img_link, product_id)
-            except:
-                found = 'Not Found'
-            try:
-                p_overview_xpath = '//p[@class="AttributeContentBlockstyles__AttributeContentBlockSummary-sc-13hmukp-2 sDuEe"]'
-                p_overview = driver.find_element(By.XPATH, p_overview_xpath).text
-            except:
-                p_overview = ''
-            update_file(row_index, p_overview, found)
-            return True
-    return False
+    except Exception as e:
+        print(e)
+        print(f'{row_index} Not Found')
+        update_file(row_index, '', 'Not found')
+        return False
 
 
 def my_wright_place(driver: webdriver.Chrome, pro_id: str, row_index: int):
-    driver.get('https://www.mywrightplace.co.za/logon')
-    driver.find_element(By.XPATH, '//input[@name="email"]').send_keys('celeste@wright-millners.co.za')
-    driver.find_element(By.XPATH, '//input[@name="password"]').send_keys('Friday14')
-    driver.find_element(By.ID, 'logonButton').click()
-    time.sleep(3)
-    driver.find_element(By.ID, 'productSearch').send_keys(pro_id)
-    driver.find_element(By.ID, 'searchButton').click()
-    time.sleep(3)
-    products = driver.find_elements(By.XPATH, '//a[@class="orderEntry"]')
-    for product in products:
-        if product.text == pro_id:
-            driver.get(f'{product.get_attribute('href')}')
-            img_link = driver.find_element(By.CLASS_NAME, 'imagePopup').get_attribute('href')
-            found = my_wright_place_save_img(img_link, pro_id)
-            update_file(row_index, '', found)
-            return
+    try:
+        driver.get('https://www.mywrightplace.co.za/logon')
+        driver.find_element(By.XPATH, '//input[@name="email"]').send_keys('celeste@wright-millners.co.za')
+        driver.find_element(By.XPATH, '//input[@name="password"]').send_keys('Friday14')
+        driver.find_element(By.ID, 'logonButton').click()
+        time.sleep(3)
+        driver.find_element(By.ID, 'productSearch').send_keys(pro_id)
+        driver.find_element(By.ID, 'searchButton').click()
+        time.sleep(3)
+        products = driver.find_elements(By.XPATH, '//a[@class="orderEntry"]')
+        for product in products:
+            if product.text == pro_id:
+                driver.get(f'{product.get_attribute("href")}')
+                img_link = driver.find_element(By.CLASS_NAME, 'imagePopup').get_attribute('href')
+                found = my_wright_place_save_img(img_link, pro_id)
+                update_file(row_index, '', found)
+                print(f'{row_index} Found')
+                return
+    except Exception as e:
+        print(e)
+
+    print(f'{row_index} Not Found')
     update_file(row_index, '', 'Not found')
 
 
