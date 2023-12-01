@@ -79,7 +79,7 @@ def my_wright_place_save_img(link: str, pro_id: str) -> str:
     try:
         response = requests.get(link)
         img_ext = link.split('?')[0].split('.')[-1]
-        path = f'asset/{pro_id}.{img_ext}'
+        path = f'asset2/{pro_id}.{img_ext}'
         if response.status_code == 200:
             with open(path, 'wb') as file:
                 file.write(response.content)
